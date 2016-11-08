@@ -18,10 +18,17 @@ class GeocodingController < ApplicationController
     # ==========================================================================
 
 
+    address_format = @street_address.gsub(" ", "+")
+    maps_url="http://maps.googleapis.com/maps/api/geocode/json?address="+@street_address_without_spaces
 
-    @latitude = "Replace this string with your answer."
 
-    @longitude = "Replace this string with your answer."
+    require 'open-uri'
+    parsed_data = JSON.parse(open(maps_url).read)
+    latitude = parsed_data["results"][0]["geometry"]["location"]["lat"]
+    longitude = parsed_data["results"][0]["geometry"]["location"]["lng"]
+
+    @latitude = latitude
+    @longitude = longitude
 
     render("geocoding/street_to_coords.html.erb")
   end
